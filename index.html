@@ -7,7 +7,7 @@
     <meta property="og:description" content="Ada sesuatu yang spesial buat kamu ✨">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://DOMAIN-KAMU">
-    <meta property="og:image" content="https://github.com/bobby175/my-porto/raw/main/475526283_639457441974249_5752591344848529673_n.jpg">
+    <meta property="og:image" content="https://bit.ly/4j4MtEq">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="1200">
     <meta property="og:image:type" content="image/jpeg">
@@ -15,7 +15,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Tolong di buka ya cantikk 💖">
     <meta name="twitter:description" content="Ada sesuatu yang spesial buat kamu ✨">
-    <meta name="twitter:image" content="https://github.com/bobby175/my-porto/raw/main/475526283_639457441974249_5752591344848529673_n.jpg">
+    <meta name="twitter:image" content="https://bit.ly/4j4MtEq">
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -67,6 +67,30 @@
         }
 
         /* START SCREEN */
+
+/* ===== RAINBOW GRADIENT START SCREEN ===== */
+#startScreen{
+  background: linear-gradient(
+    270deg,
+    #ff4d4d,
+    #ff9f4d,
+    #ffee4d,
+    #4dff88,
+    #4dd2ff,
+    #8f4dff,
+    #ff4dd2
+  );
+  background-size: 1400% 1400%;
+  animation: rainbowBG 18s ease-in-out infinite;
+}
+
+@keyframes rainbowBG{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+/* ====================================== */
+
         #startScreen {
             position: fixed;
             inset: 0;
@@ -1292,6 +1316,8 @@
             width: 90%;
             display: flex;
             flex-direction: column;
+            gap: 0.4rem; /* tightened */
+            /* old gap overridden */
             gap: clamp(0.8rem, 2.8vw, 1.3rem);
             align-items: center;
             background: rgba(0, 0, 0, 0.15);
@@ -1309,6 +1335,7 @@
         }
 
         #endScreen p {
+            margin: 0.15rem 0; /* tighter paragraph spacing */
             width: 100%;
             line-height: 1.4;
             color: #f3dff1;
@@ -1971,7 +1998,45 @@
   z-index:2147483647;
 }
 
+
+.typing-cursor::after{
+  content:"▋";
+  margin-left:4px;
+  animation:blink 1s infinite;
+}
+@keyframes blink{0%,50%{opacity:1}51%,100%{opacity:0}}
+
+/* Smooth rainbow glow for title & button */
+#startScreen h2{
+  font-size: clamp(1.5rem, 5vw, 2.2rem);
+  color:#fff;
+  text-shadow:0 0 10px #ff00f7;
+  margin-bottom:0.8rem;
+  animation: floatUp 2s infinite;
+}
+
+#openBtn{
+  padding: clamp(0.6rem, 2.5vw, 1rem) clamp(1.2rem, 5vw, 2rem);
+  font-size: clamp(1.2rem, 4vw, 1.8rem);
+  border-radius: 2rem;
+  border: none;
+  background: var(--pink-dark);
+  color:#fff;
+  cursor:pointer;
+  box-shadow:0 0 15px #ff00ea;
+  animation:pulse 1.5s infinite;
+  transition:all 0.3s ease;
+  position:relative;
+  z-index:10;
+  min-height:3rem;
+}
+
+
+  to{filter:hue-rotate(360deg)}
+}
+
 </style>
+
 
 <style>
 /* ===== HARD FIX: TITLE BACKGROUND TRANSPARENT (MATCH MESSAGE CONTENT) ===== */
@@ -2058,7 +2123,7 @@
             <!-- KOLOM 1: Foto, nama, tanggal, dan hati -->
             <div class="profile-container">
                 <div class="profile-photo-wrapper" id="profilePhotoWrapper">
-                    <img src="https://github.com/bobby175/my-porto/raw/main/475526283_639457441974249_5752591344848529673_n.jpg" 
+                    <img src="https://bit.ly/4j4MtEq" 
                          alt="Foto Si Cantik" class="profile-photo no-download">
                     <div class="photo-decoration top">🎀</div>
                     <div class="photo-decoration bottom">✨</div>
@@ -2108,32 +2173,21 @@
     <!-- END -->
     <div id="endScreen" role="dialog" aria-modal="true">
         
+
+
 <div id="endInner">
     <h2>Terima kasih telah membuka pesannya 🎀</h2>
 
-    <p>
-        Semoga hari ini penuh berkah
-        dan kebahagiaan yaa.
-    </p>
-
-    <p>
-        trimakasih telah menjadi manusia favoriteku,
-        membuat dunia kerjaku lebih berwarna walau jarang ngobrol sih,
-        sebenernya pengen bisa ngobrol di luar tapii kayaknya gamungkin bisaa,
-        apalagi semenjak tau kalau Wulan ada temen deket cowo di tempat kerja,
-        mungkin ini alasannya wulan takut rame di tempat kerja yaa?
-    </p> 
-
-    <p> tapi itu ga penting, yang penting sekarang Wulan harus bahagia dan tambah sehat yaa</p>
-
-    <p>
-        oh iya ini ada gift buat Wulan,
-        traktirannya beli sendirii tapii hehehe.
-        klik tombol ambil giftnya yaaa nanti langsung di arahin ke apk dana:))
-    </p>
+    <p class="typing-line"></p>
+    <p class="typing-line"></p>
+    <p class="typing-line"></p>
+    <p class="typing-line"></p>
+    <p class="typing-line"></p>
+    <p class="typing-line"></p>
 
     <p class="hint">
-        Disarankan ngambilnya buka lewat chrome di hp ,tapi kalau mau lihat tampilannya di rekomdasiin pakai laptop hehehe
+        Disarankan ngambilnya buka lewat chrome di hp ,
+        tapi kalau mau lihat tampilannya di rekomdasiin pakai laptop hehehe
     </p>
 
     <div class="btnRow">
@@ -2143,6 +2197,12 @@
         </button>
     </div>
 </div>
+
+
+        </div>
+
+
+        </div>
 
         </div>
 
@@ -2894,6 +2954,7 @@ Dan Selamat Tahun Baru 🎉`;
                 messageBox.style.display = "none";
                 messageBox.setAttribute('aria-hidden', 'true');
                 endScreen.style.display = "grid";
+                requestAnimationFrame(typeEndScreen);
 
                 // pause bgm
                 try { bgm.pause(); } catch (e) { }
@@ -3036,7 +3097,45 @@ Dan Selamat Tahun Baru 🎉`;
                 });
             })();
         });
-    </script>
+    
+/* ================= END SCREEN TYPING (FINAL FIX) ================= */
+const endTexts = [
+  "Hai manusia favorit, semoga hari ini penuh berkah dan kebahagiaan yaa",
+  "trimakasih telah membuat dunia kerjaku lebih berwarna walau jarang ngobrol sih,",
+  "sebenernya pengen bisa ngobrol di luar tapii kayaknya gamungkin bisaa. apalagi semenjak tau wulan deket sama temen kerja juga",
+  "tapi itu ga penting, yang penting sekarang Wulan harus bahagia, tambah sehat dan tambah cantik pulaa wkwk",
+  "oh iya ini ada gift buat Wulan, traktirannya beli sendirii tapii hehehe. klik tombol ambil giftnya yaaa nanti langsung di arahin ke apk dana :)",
+  "maaf ya cuma bisa ngasih ginian, berhubung gapunya foto cutenya wulan jadi ijin ngelink dari ppnya IGnya :v"
+];
+
+function typeEndScreen(){
+  const lines = document.querySelectorAll("#endInner .typing-line");
+  let idx = 0;
+
+  function typeLine(){
+    if(idx >= endTexts.length) return;
+    const el = lines[idx];
+    const text = endTexts[idx];
+    let i = 0;
+    el.textContent = "";
+    el.classList.add("typing-cursor");
+
+    const timer = setInterval(()=>{
+      el.textContent += text.charAt(i);
+      i++;
+      if(i >= text.length){
+        clearInterval(timer);
+        el.classList.remove("typing-cursor");
+        idx++;
+        setTimeout(typeLine, 500);
+      }
+    }, 35);
+  }
+  typeLine();
+}
+/* ================================================================ */
+
+</script>
 
     <!-- Additional cute features: whispers, sakura, bunnies, shine, gift explosion, loading -->
     <script>
@@ -3628,7 +3727,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let audio;
   giftBtn.addEventListener("click", () => {
     if(!audio){
-      audio = new Audio("https://raw.githubusercontent.com/bobby175/audio/main/v4.www-y2mate.blog%20-%20TULUS%20-%20Jatuh%20Suka%20(Official%20Lyric%20Video)%20(320%20KBps)%20(1)%20(mp3cut.net).mp3");
+      audio = new Audio("https://bit.ly/4p5Da8K");
       audio.loop = false;
     }
     audio.play().catch(()=>{});

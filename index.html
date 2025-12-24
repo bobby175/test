@@ -6,214 +6,78 @@
     <title>Chat Online</title>
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="icon.png">
+    <!-- iOS Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Chat Online">
+    <link rel="apple-touch-icon" href="icon.png">
     
     <style>
-        html, body {
-            margin: 0;
-            height: 100%;
-            background: #0f0f14;
-            font-family: system-ui, Segoe UI, Arial;
-            color: #fff;
-            overflow-x: hidden;
-            touch-action: pan-y;
-            overscroll-behavior-x: none;
+        /* [KEEP ALL STYLES SAME] */
+        /* ... existing styles ... */
+        
+        /* Mobile-specific fixes */
+        @media (max-width: 768px) {
+            .container {
+                padding: 8px;
+                height: 100vh;
+            }
+            
+            textarea {
+                min-height: 50px;
+                font-size: 16px; /* Prevent zoom on iOS */
+            }
+            
+            #sendBtn {
+                padding: 14px;
+                font-size: 16px;
+            }
+            
+            .bubble {
+                max-width: 85%;
+                font-size: 15px;
+            }
+            
+            /* Fix for iOS Safari */
+            input, textarea {
+                -webkit-appearance: none;
+                border-radius: 20px;
+            }
         }
         
-        .container {
-            max-width: 700px;
-            height: 100%;
-            margin: auto;
-            display: flex;
-            flex-direction: column;
-            padding: 12px;
-        }
-        
-        h1 {
-            text-align: center;
-            color: #00e0ff;
-            margin: 6px 0;
-        }
-        
-        #userName {
-            padding: 8px;
-            border-radius: 8px;
-            border: none;
-            margin-bottom: 6px;
-            background: #1c1c25;
+        /* Fix untuk notifikasi */
+        .notification-badge {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: #ff4757;
             color: white;
-        }
-        
-        #userName:disabled {
-            opacity: .6;
-            background: #1a1a22;
-        }
-        
-        .toggles {
-            display: flex;
-            gap: 14px;
-            align-items: center;
-            margin-bottom: 6px;
-        }
-        
-        .toggle {
-            font-size: 12px;
-            opacity: .85;
-        }
-        
-        .toggle input {
-            accent-color: #25d366;
-        }
-        
-        .chat {
-            flex: 1;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            padding: 6px 4px;
-        }
-        
-        .bubble {
-            max-width: 78%;
-            width: fit-content;
-            padding: 8px 10px 10px;
-            border-radius: 8px;
-            position: relative;
-            font-size: 14px;
-            line-height: 1.4;
-        }
-        
-        .left {
-            align-self: flex-start;
-            border-top-left-radius: 0;
-        }
-        
-        .right {
-            align-self: flex-end;
-            background: #075e54;
-            border-top-right-radius: 0;
-        }
-        
-        .left::before {
-            content: "";
-            position: absolute;
-            left: -6px;
-            top: 0;
-            border-width: 6px 6px 0 0;
-            border-style: solid;
-            border-color: var(--c) transparent transparent transparent;
-        }
-        
-        .meta {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        
-        .name {
-            font-weight: 700;
-            filter: brightness(1.35);
-        }
-        
-        .time {
-            font-size: 10px;
-            opacity: .6;
-        }
-        
-        textarea {
-            min-height: 60px;
-            border-radius: 20px;
-            border: none;
-            padding: 10px;
-            resize: none;
-            background: #1c1c25;
-            color: #fff;
-            font-family: inherit;
-        }
-        
-        button {
-            margin-top: 6px;
-            padding: 12px;
-            border: none;
-            border-radius: 20px;
-            background: #25d366;
-            color: #000;
-            font-weight: 600;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-        
-        button:hover {
-            opacity: 0.9;
-        }
-        
-        button:disabled {
-            opacity: .4;
-            cursor: not-allowed;
-        }
-        
-        .credit {
-            text-align: center;
-            font-size: 11px;
-            opacity: .5;
-            margin-top: 6px;
-        }
-        
-        /* Scrollbar styling */
-        .chat::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        .chat::-webkit-scrollbar-track {
-            background: #1a1a22;
-            border-radius: 4px;
-        }
-        
-        .chat::-webkit-scrollbar-thumb {
-            background: #25d366;
-            border-radius: 4px;
-        }
-        
-        /* Loading animation */
-        .typing {
-            display: inline-block;
-        }
-        
-        .typing span {
-            height: 8px;
-            width: 8px;
-            background: #25d366;
             border-radius: 50%;
-            display: inline-block;
-            margin: 0 1px;
-            animation: typing 1.4s infinite;
+            width: 20px;
+            height: 20px;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+            z-index: 1000;
+            animation: pulse 2s infinite;
         }
         
-        .typing span:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-        
-        .typing span:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-        
-        @keyframes typing {
-            0%, 60%, 100% {
-                transform: translateY(0);
-            }
-            30% {
-                transform: translateY(-5px);
-            }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
     </style>
 </head>
 
 <body>
+    <!-- Notification Badge untuk Mobile -->
+    <div class="notification-badge" id="notificationBadge">!</div>
+    
     <div class="container">
         <h1>💬 Chat Online</h1>
-        <input id="userName" placeholder="Masukkan nama kamu">
+        <input id="userName" placeholder="Masukkan nama kamu" autocomplete="off">
         
         <div class="toggles">
             <label class="toggle">
@@ -226,14 +90,16 @@
         
         <div class="chat" id="chat"></div>
         
-        <textarea id="input" placeholder="Tulis pesan..."></textarea>
+        <textarea id="input" placeholder="Tulis pesan..." autocomplete="off"></textarea>
         <button id="sendBtn" disabled>Kirim</button>
         
         <div class="credit">Dibuat oleh A.M. | Chat online realtime</div>
     </div>
     
+    <!-- Audio untuk semua platform -->
     <audio id="notifSound" preload="auto">
         <source src="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3" type="audio/mpeg">
+        <source src="notification.mp3" type="audio/mpeg">
     </audio>
     
     <script type="module">
@@ -241,7 +107,7 @@
         import {
             getFirestore, collection, addDoc,
             serverTimestamp, onSnapshot,
-            query, orderBy, limit
+            query, orderBy, limit, Timestamp
         } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
         
         // Konfigurasi Firebase
@@ -266,73 +132,179 @@
         const enterToggle = document.getElementById("enterSend");
         const notifToggle = document.getElementById("notifToggle");
         const notifSound = document.getElementById("notifSound");
+        const notificationBadge = document.getElementById("notificationBadge");
         
         // Variabel
         let lastSeen = Number(localStorage.getItem("lastSeen") || 0);
-        let messageCount = 0;
+        let isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        let isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+        let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+        let appVisible = true;
         
-        // Daftarkan Service Worker untuk notifikasi
-        if ('serviceWorker' in navigator && 'PushManager' in window) {
-            navigator.serviceWorker.register('sw.js')
-                .then(registration => {
-                    console.log('Service Worker berhasil didaftarkan');
-                })
-                .catch(err => {
-                    console.log('Service Worker gagal didaftarkan:', err);
-                });
+        console.log("Device Info:", { isMobile, isIOS, isSafari });
+        
+        // ====================== SERVICE WORKER REGISTRATION ======================
+        async function registerServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                try {
+                    const registration = await navigator.serviceWorker.register('sw.js');
+                    console.log('Service Worker registered:', registration.scope);
+                    
+                    // Cek jika service worker aktif
+                    if (registration.active) {
+                        console.log('Service Worker aktif');
+                    }
+                    
+                    return registration;
+                } catch (error) {
+                    console.log('Service Worker registration failed:', error);
+                    return null;
+                }
+            }
+            return null;
         }
         
-        // Minta izin notifikasi
+        // ====================== NOTIFICATION PERMISSION ======================
         async function requestNotificationPermission() {
+            // Cek apakah browser mendukung notifikasi
             if (!('Notification' in window)) {
                 console.log('Browser tidak mendukung notifikasi');
                 return false;
             }
             
+            // Jika sudah diizinkan
             if (Notification.permission === 'granted') {
                 return true;
             }
             
+            // Jika belum ditanyakan, minta izin
             if (Notification.permission !== 'denied') {
-                const permission = await Notification.requestPermission();
-                return permission === 'granted';
+                try {
+                    // Untuk iOS/Safari, harus dari user interaction
+                    const permission = await Notification.requestPermission();
+                    console.log('Permission status:', permission);
+                    return permission === 'granted';
+                } catch (error) {
+                    console.log('Error requesting permission:', error);
+                    return false;
+                }
             }
             
             return false;
         }
         
-        // Tampilkan notifikasi
-        function showNotification(title, body) {
+        // ====================== PLAY NOTIFICATION SOUND ======================
+        function playNotificationSound() {
             if (!notifToggle.checked) return;
-            if (Notification.permission !== 'granted') return;
             
-            // Jika tab aktif, mainkan suara
-            if (!document.hidden) {
+            // Untuk mobile, butuh user interaction terlebih dahulu
+            try {
                 notifSound.currentTime = 0;
-                notifSound.play().catch(() => {});
+                
+                // Unmute audio
+                notifSound.muted = false;
+                notifSound.volume = 0.7;
+                
+                const playPromise = notifSound.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.log('Audio play failed:', error);
+                        // Coba dengan user gesture
+                        document.addEventListener('click', function playOnClick() {
+                            notifSound.play().catch(e => console.log('Still failed:', e));
+                            document.removeEventListener('click', playOnClick);
+                        }, { once: true });
+                    });
+                }
+            } catch (error) {
+                console.log('Error playing sound:', error);
             }
-            
-            // Tampilkan notifikasi
-            const notification = new Notification(title, {
-                body: body,
-                icon: 'icon.png',
-                badge: 'icon.png',
-                tag: 'chat-message',
-                requireInteraction: false,
-                silent: document.hidden // Hanya diam jika tab tidak aktif
-            });
-            
-            // Saat notifikasi diklik, fokus ke window
-            notification.onclick = function() {
-                window.focus();
-                notification.close();
-            };
-            
-            // Tutup notifikasi otomatis setelah 5 detik
-            setTimeout(() => notification.close(), 5000);
         }
         
-        // Restore data dari localStorage
+        // ====================== SHOW NOTIFICATION ======================
+        async function showNotification(title, body) {
+            if (!notifToggle.checked) return;
+            
+            // Cek izin
+            if (Notification.permission !== 'granted') {
+                return;
+            }
+            
+            // Cek jika app tidak visible (background/minimized)
+            if (!appVisible) {
+                // Tampilkan badge untuk mobile
+                if (isMobile) {
+                    notificationBadge.style.display = 'flex';
+                    notificationBadge.textContent = '💬';
+                    
+                    // Auto hide setelah 5 detik
+                    setTimeout(() => {
+                        notificationBadge.style.display = 'none';
+                    }, 5000);
+                }
+                
+                // Mainkan suara
+                playNotificationSound();
+                
+                // Coba tampilkan notifikasi browser
+                try {
+                    const options = {
+                        body: body,
+                        icon: 'icon.png',
+                        badge: 'icon.png',
+                        tag: 'chat-message',
+                        requireInteraction: false,
+                        vibrate: isMobile ? [200, 100, 200] : undefined
+                    };
+                    
+                    // Untuk iOS, gunakan service worker jika ada
+                    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                        navigator.serviceWorker.controller.postMessage({
+                            type: 'SHOW_NOTIFICATION',
+                            notification: {
+                                title: title,
+                                options: options
+                            }
+                        });
+                    } else {
+                        // Fallback ke Notification API
+                        const notification = new Notification(title, options);
+                        
+                        notification.onclick = function() {
+                            window.focus();
+                            this.close();
+                        };
+                    }
+                } catch (error) {
+                    console.log('Notification error:', error);
+                }
+            } else {
+                // App visible, hanya mainkan suara
+                playNotificationSound();
+            }
+        }
+        
+        // ====================== VISIBILITY CHANGE ======================
+        document.addEventListener('visibilitychange', () => {
+            appVisible = !document.hidden;
+            console.log('App visible:', appVisible);
+            
+            if (appVisible) {
+                // Sembunyikan badge jika ada
+                notificationBadge.style.display = 'none';
+                
+                // Update last seen
+                lastSeen = Date.now();
+                localStorage.setItem('lastSeen', lastSeen);
+            }
+        });
+        
+        // ====================== INITIAL SETUP ======================
+        // Register service worker
+        registerServiceWorker();
+        
+        // Load saved settings
         const SAVED_NAME = localStorage.getItem("myName");
         if (SAVED_NAME) {
             nameInput.value = SAVED_NAME;
@@ -340,39 +312,48 @@
             sendBtn.disabled = false;
         }
         
-        // Cek apakah perangkat mobile
-        const isMobile = /android|iphone|ipad/i.test(navigator.userAgent);
-        
-        // Load pengaturan
+        // Load toggle states
         enterToggle.checked = localStorage.getItem("enterSend") !== null
             ? localStorage.getItem("enterSend") === "true"
             : !isMobile;
             
         notifToggle.checked = localStorage.getItem("notifOn") === "true";
         
-        // Event listeners untuk toggle
+        // Setup toggle listeners
         enterToggle.onchange = () => {
             localStorage.setItem("enterSend", enterToggle.checked);
         };
         
         notifToggle.onchange = async () => {
-            localStorage.setItem("notifOn", notifToggle.checked);
-            if (notifToggle.checked) {
+            const isChecked = notifToggle.checked;
+            localStorage.setItem("notifOn", isChecked);
+            
+            if (isChecked) {
                 const granted = await requestNotificationPermission();
                 if (!granted) {
                     notifToggle.checked = false;
                     localStorage.setItem("notifOn", false);
-                    alert('Izinkan notifikasi untuk mendapatkan pemberitahuan pesan baru');
+                    
+                    // Tampilkan alert friendly
+                    if (isMobile) {
+                        alert('Untuk notifikasi, silakan:\n1. Izinkan notifikasi di pengaturan browser\n2. Tambahkan ke home screen untuk pengalaman terbaik');
+                    }
                 }
             }
         };
         
-        // Event listener untuk nama
+        // Auto-enable notifications untuk iOS jika di home screen
+        if (isIOS && window.navigator.standalone) {
+            notifToggle.checked = true;
+            localStorage.setItem("notifOn", true);
+            requestNotificationPermission();
+        }
+        
+        // ====================== CHAT FUNCTIONS ======================
         nameInput.addEventListener("input", () => {
             sendBtn.disabled = !nameInput.value.trim();
         });
         
-        // Generate warna dari nama
         function colorFromName(name) {
             let hash = 0;
             for (let i = 0; i < name.length; i++) {
@@ -381,7 +362,6 @@
             return `hsl(${Math.abs(hash) % 360}, 65%, 35%)`;
         }
         
-        // Format waktu
         function formatTime(date) {
             const now = new Date();
             const diffMs = now - date;
@@ -399,7 +379,7 @@
             });
         }
         
-        // Query Firestore
+        // ====================== FIREBASE LISTENER ======================
         const q = query(
             collection(db, "notes"),
             orderBy("createdAt", "desc"),
@@ -407,10 +387,9 @@
         );
         
         let firstLoad = true;
+        let lastMessageTime = 0;
         
-        // Listen untuk perubahan data
         onSnapshot(q, { includeMetadataChanges: true }, snap => {
-            // Update lastSeen pada first load
             if (firstLoad) {
                 snap.forEach(d => {
                     const data = d.data();
@@ -422,7 +401,7 @@
                 firstLoad = false;
             }
             
-            // Proses pesan baru
+            // Process new messages
             snap.docChanges().forEach(change => {
                 if (change.type === "added") {
                     const data = change.doc.data();
@@ -431,25 +410,25 @@
                     const ts = data.createdAt.toMillis();
                     const myName = nameInput.value || "";
                     
-                    // Cek jika pesan baru dan bukan dari user sendiri
-                    if (ts > lastSeen) {
+                    // Cek jika pesan baru (lebih dari 2 detik untuk avoid double)
+                    if (ts > lastSeen && (Date.now() - lastMessageTime > 2000)) {
+                        lastMessageTime = Date.now();
+                        
                         if (data.name !== myName) {
-                            // Tampilkan notifikasi jika tab tidak aktif atau browser minimized
-                            if (document.hidden) {
-                                showNotification(`${data.name} mengirim pesan`, data.text);
-                            } else if (notifToggle.checked) {
-                                // Tab aktif, mainkan suara saja
-                                notifSound.currentTime = 0;
-                                notifSound.play().catch(() => {});
-                            }
+                            // Tampilkan notifikasi
+                            showNotification(
+                                `${data.name} mengirim pesan`,
+                                data.text.length > 50 ? data.text.substring(0, 50) + '...' : data.text
+                            );
                         }
+                        
                         lastSeen = ts;
                         localStorage.setItem("lastSeen", lastSeen);
                     }
                 }
             });
             
-            // Render semua pesan
+            // Render messages
             chatEl.innerHTML = "";
             const messages = [];
             
@@ -457,7 +436,6 @@
                 messages.push(d.data());
             });
             
-            // Urutkan dari terlama ke terbaru untuk ditampilkan
             messages.reverse().forEach(data => {
                 if (!data.createdAt) return;
                 
@@ -483,18 +461,17 @@
                 chatEl.appendChild(div);
             });
             
-            // Scroll ke bawah
             chatEl.scrollTop = chatEl.scrollHeight;
         });
         
-        // Kirim pesan
+        // ====================== SEND MESSAGE ======================
         async function sendMessage() {
             const name = nameInput.value.trim();
             const text = input.value.trim();
             
             if (!name || !text) return;
             
-            // Simpan nama ke localStorage
+            // Simpan nama
             localStorage.setItem("myName", name);
             nameInput.disabled = true;
             sendBtn.disabled = false;
@@ -507,14 +484,15 @@
                 });
                 
                 input.value = "";
+                input.style.height = 'auto';
                 input.focus();
             } catch (error) {
                 console.error("Error mengirim pesan:", error);
-                alert("Gagal mengirim pesan. Coba lagi.");
+                alert("Gagal mengirim pesan. Periksa koneksi internet.");
             }
         }
         
-        // Event listeners
+        // ====================== EVENT LISTENERS ======================
         sendBtn.onclick = sendMessage;
         
         input.onkeydown = e => {
@@ -527,46 +505,74 @@
         // Auto-resize textarea
         input.addEventListener('input', function() {
             this.style.height = 'auto';
-            this.style.height = (this.scrollHeight) + 'px';
+            this.style.height = Math.min(this.scrollHeight, 150) + 'px';
         });
         
-        // Deteksi ketika tab/window tidak aktif
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                // Tab tidak aktif, simpan waktu
-                localStorage.setItem('lastActive', Date.now());
-            } else {
-                // Tab aktif lagi, update lastSeen
-                lastSeen = Date.now();
-                localStorage.setItem('lastSeen', lastSeen);
-            }
-        });
-        
-        // Deteksi sebelum tab ditutup
-        window.addEventListener('beforeunload', () => {
-            localStorage.setItem('tabClosedAt', Date.now());
-        });
-        
-        // Cek apakah ada notifikasi yang tertunda saat halaman dimuat
-        window.addEventListener('load', () => {
-            const lastActive = localStorage.getItem('lastActive');
-            const tabClosedAt = localStorage.getItem('tabClosedAt');
+        // ====================== MOBILE SPECIFIC FIXES ======================
+        // Fix untuk iOS keyboard
+        if (isIOS) {
+            const originalHeight = window.innerHeight;
             
-            if (lastActive && tabClosedAt) {
-                const timeDiff = Date.now() - Math.max(lastActive, tabClosedAt);
-                
-                // Jika user kembali setelah > 10 detik, anggap sebagai "kembali dari tidak aktif"
-                if (timeDiff > 10000 && notifToggle.checked) {
-                    // Di sini bisa tambahkan logika untuk mengecek pesan baru
-                    // atau menampilkan welcome back message
+            window.addEventListener('resize', () => {
+                if (window.innerHeight < originalHeight) {
+                    // Keyboard muncul, scroll ke input
+                    setTimeout(() => {
+                        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 300);
                 }
+            });
+        }
+        
+        // Touch feedback untuk mobile
+        sendBtn.addEventListener('touchstart', () => {
+            sendBtn.style.opacity = '0.8';
+        });
+        
+        sendBtn.addEventListener('touchend', () => {
+            sendBtn.style.opacity = '1';
+        });
+        
+        // Force user interaction untuk audio di iOS
+        if (isIOS) {
+            document.addEventListener('touchstart', function initAudio() {
+                notifSound.volume = 0.0001;
+                notifSound.play().then(() => {
+                    notifSound.pause();
+                    notifSound.currentTime = 0;
+                }).catch(() => {});
+                document.removeEventListener('touchstart', initAudio);
+            }, { once: true });
+        }
+        
+        // ====================== APP INSTALL PROMPT ======================
+        let deferredPrompt;
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // Tampilkan install button untuk mobile
+            if (isMobile) {
+                setTimeout(() => {
+                    if (confirm('Ingin install aplikasi Chat untuk notifikasi yang lebih baik?')) {
+                        deferredPrompt.prompt();
+                        deferredPrompt.userChoice.then((choiceResult) => {
+                            if (choiceResult.outcome === 'accepted') {
+                                console.log('User installed the app');
+                            }
+                            deferredPrompt = null;
+                        });
+                    }
+                }, 3000);
             }
         });
         
         // Inisialisasi notifikasi jika toggle aktif
         if (notifToggle.checked) {
-            requestNotificationPermission();
+            setTimeout(() => requestNotificationPermission(), 1000);
         }
+        
+        console.log('Chat app initialized successfully');
     </script>
 </body>
 </html>

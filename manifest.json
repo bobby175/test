@@ -6,7 +6,9 @@
     "display": "standalone",
     "background_color": "#0f0f14",
     "theme_color": "#0f0f14",
-    "orientation": "portrait-primary",
+    "orientation": "portrait",
+    "scope": "/",
+    
     "icons": [
         {
             "src": "icon.png",
@@ -21,23 +23,37 @@
             "purpose": "any maskable"
         }
     ],
-    "categories": ["social", "communication", "utilities"],
+    
+    "categories": ["social", "communication"],
+    
     "shortcuts": [
         {
-            "name": "Buka Chat",
+            "name": "Kirim Pesan",
             "short_name": "Chat",
-            "description": "Buka aplikasi chat",
+            "description": "Mulai percakapan baru",
             "url": "/",
-            "icons": [{ "src": "icon.png", "sizes": "192x192" }]
+            "icons": [{ "src": "icon.png", "sizes": "96x96" }]
         }
     ],
+    
     "screenshots": [
         {
-            "src": "screenshot.png",
-            "sizes": "1280x720",
+            "src": "screenshot-mobile.png",
+            "sizes": "540x720",
             "type": "image/png",
-            "form_factor": "wide",
-            "label": "Chat Online Screenshot"
+            "form_factor": "narrow",
+            "label": "Chat Mobile View"
+        }
+    ],
+    
+    "prefer_related_applications": false,
+    
+    "related_applications": [],
+    
+    "protocol_handlers": [
+        {
+            "protocol": "web+chat",
+            "url": "/?url=%s"
         }
     ]
 }

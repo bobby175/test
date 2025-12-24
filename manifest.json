@@ -1,7 +1,7 @@
 {
-  "name": "Chat Android",
+  "name": "Chat Khusus",
   "short_name": "Chat",
-  "description": "Chat realtime dengan notifikasi Android",
+  "description": "Aplikasi chat online dengan notifikasi realtime",
   "start_url": "/",
   "display": "standalone",
   "display_override": ["window-controls-overlay"],
@@ -68,14 +68,14 @@
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Chat Screen"
+      "label": "Tampilan Chat Mobile"
     },
     {
       "src": "screenshot2.png",
       "sizes": "1920x1080",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "Chat Desktop"
+      "label": "Tampilan Chat Desktop"
     }
   ],
   
@@ -83,7 +83,7 @@
   
   "shortcuts": [
     {
-      "name": "Mulai Chat",
+      "name": "Mulai Chat Baru",
       "short_name": "Chat",
       "description": "Mulai percakapan baru",
       "url": "/",
@@ -96,7 +96,7 @@
   },
   
   "launch_handler": {
-    "client_mode": "auto"
+    "client_mode": "focus-existing"
   },
   
   "protocol_handlers": [
@@ -106,14 +106,9 @@
     }
   ],
   
-  "handle_links": "preferred",
-  
   "permissions": [
-    "notifications",
-    "background-sync"
+    "notifications"
   ],
-  
-  "related_applications": [],
   
   "prefer_related_applications": false
 }

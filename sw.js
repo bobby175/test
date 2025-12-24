@@ -1,245 +1,198 @@
-// Enhanced Service Worker untuk Mobile
-const CACHE_NAME = 'chat-online-v2';
-const APP_VERSION = '2.0.0';
+// Service Worker untuk Chat PWA
+const CACHE_NAME = 'Team_C';
+const APP_VERSION = '1.0.0';
 
 // Assets to cache
 const ASSETS_TO_CACHE = [
-    './',
-    './index.html',
-    './manifest.json',
-    './icon.png',
-    'https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3'
+  './',
+  './index.html',
+  './manifest.json',
+  './icon-192.png',
+  './icon-512.png',
+  'https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3'
 ];
 
 // Install Service Worker
-self.addEventListener('install', event => {
-    console.log('Service Worker: Installing...');
-    
-    event.waitUntil(
-        caches.open(CACHE_NAME)
-            .then(cache => {
-                console.log('Service Worker: Caching app shell');
-                return cache.addAll(ASSETS_TO_CACHE);
-            })
-            .then(() => {
-                console.log('Service Worker: Install completed');
-                return self.skipWaiting();
-            })
-    );
+self.addEventListener('install', (event) => {
+  console.log('🛠️ Service Worker: Installing...');
+  
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then((cache) => {
+        console.log('📦 Caching app shell');
+        return cache.addAll(ASSETS_TO_CACHE);
+      })
+      .then(() => {
+        console.log('✅ Pre-caching complete');
+        return self.skipWaiting();
+      })
+  );
 });
 
 // Activate Service Worker
-self.addEventListener('activate', event => {
-    console.log('Service Worker: Activating...');
-    
-    event.waitUntil(
-        caches.keys().then(cacheNames => {
-            return Promise.all(
-                cacheNames.map(cacheName => {
-                    if (cacheName !== CACHE_NAME) {
-                        console.log('Service Worker: Deleting old cache', cacheName);
-                        return caches.delete(cacheName);
-                    }
-                })
-            );
-        })
-        .then(() => {
-            console.log('Service Worker: Activate completed');
-            return self.clients.claim();
-        })
-    );
+self.addEventListener('activate', (event) => {
+  console.log('🚀 Service Worker: Activating...');
+  
+  event.waitUntil(
+    caches.keys()
+      .then((cacheNames) => {
+        return Promise.all(
+          cacheNames.map((cacheName) => {
+            if (cacheName !== CACHE_NAME) {
+              console.log('🗑️ Deleting old cache:', cacheName);
+              return caches.delete(cacheName);
+            }
+          })
+        );
+      })
+      .then(() => {
+        console.log('✅ Service Worker activated');
+        return self.clients.claim();
+      })
+  );
 });
 
-// Fetch event - Cache first, then network
-self.addEventListener('fetch', event => {
-    // Skip non-GET requests
-    if (event.request.method !== 'GET') return;
-    
-    // Skip chrome-extension requests
-    if (event.request.url.startsWith('chrome-extension://')) return;
-    
-    event.respondWith(
-        caches.match(event.request)
-            .then(cachedResponse => {
-                // Return cached version if available
-                if (cachedResponse) {
-                    return cachedResponse;
-                }
-                
-                // Otherwise fetch from network
-                return fetch(event.request)
-                    .then(response => {
-                        // Don't cache if not a valid response
-                        if (!response || response.status !== 200 || response.type !== 'basic') {
-                            return response;
-                        }
-                        
-                        // Clone the response
-                        const responseToCache = response.clone();
-                        
-                        // Cache the new response
-                        caches.open(CACHE_NAME)
-                            .then(cache => {
-                                cache.put(event.request, responseToCache);
-                            });
-                        
-                        return response;
-                    });
-            })
-    );
+// Fetch from cache when offline
+self.addEventListener('fetch', (event) => {
+  // Skip non-GET requests
+  if (event.request.method !== 'GET') return;
+  
+  event.respondWith(
+    caches.match(event.request)
+      .then((cachedResponse) => {
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+        
+        return fetch(event.request)
+          .then((response) => {
+            // Don't cache if not a valid response
+            if (!response || response.status !== 200 || response.type !== 'basic') {
+              return response;
+            }
+            
+            // Clone the response
+            const responseToCache = response.clone();
+            
+            // Cache the new response
+            caches.open(CACHE_NAME)
+              .then((cache) => {
+                cache.put(event.request, responseToCache);
+              });
+            
+            return response;
+          })
+          .catch(() => {
+            // If offline and not in cache, return offline page
+            return new Response('Offline', {
+              status: 503,
+              statusText: 'Service Unavailable',
+              headers: { 'Content-Type': 'text/plain' }
+            });
+          });
+      })
+  );
 });
-
-// ==================== NOTIFICATION HANDLERS ====================
 
 // Handle push notifications
-self.addEventListener('push', event => {
-    console.log('Service Worker: Push received');
-    
-    if (!event.data) return;
-    
-    let data = {};
-    try {
-        data = event.data.json();
-    } catch (e) {
-        data = {
-            title: 'Chat Online',
-            body: event.data.text() || 'Pesan baru',
-            icon: 'icon.png'
-        };
+self.addEventListener('push', (event) => {
+  console.log('📲 Push notification received');
+  
+  let data = {};
+  
+  try {
+    if (event.data) {
+      data = event.data.json();
     }
-    
-    const options = {
-        body: data.body || 'Ada pesan baru di chat',
-        icon: data.icon || 'icon.png',
-        badge: 'icon.png',
-        tag: 'chat-notification',
-        vibrate: [200, 100, 200],
-        data: {
-            url: data.url || '/',
-            timestamp: Date.now()
-        },
-        actions: [
-            {
-                action: 'open',
-                title: 'Buka Chat'
-            }
-        ]
+  } catch (e) {
+    data = {
+      title: '💬 Chat Online',
+      body: 'Ada pesan baru',
+      icon: 'icon-192.png'
     };
-    
-    event.waitUntil(
-        self.registration.showNotification(data.title || '💬 Chat Online', options)
-    );
+  }
+  
+  const options = {
+    body: data.body || 'Klik untuk membuka chat',
+    icon: data.icon || 'icon-192.png',
+    badge: 'icon-192.png',
+    tag: data.tag || 'chat-notification',
+    vibrate: [200, 100, 200],
+    requireInteraction: false,
+    data: {
+      url: data.url || './',
+      timestamp: Date.now()
+    },
+    actions: [
+      {
+        action: 'open',
+        title: '📲 Buka Chat'
+      }
+    ]
+  };
+  
+  event.waitUntil(
+    self.registration.showNotification(data.title || '💬 Chat', options)
+  );
 });
 
 // Handle notification click
-self.addEventListener('notificationclick', event => {
-    console.log('Service Worker: Notification clicked');
-    
-    event.notification.close();
-    
-    const urlToOpen = event.notification.data?.url || '/';
-    
-    event.waitUntil(
-        clients.matchAll({
-            type: 'window',
-            includeUncontrolled: true
-        })
-        .then(clientList => {
-            // Check if there's already a window/tab open with the target URL
-            for (const client of clientList) {
-                if (client.url === urlToOpen && 'focus' in client) {
-                    return client.focus();
-                }
-            }
-            
-            // If not, open a new window/tab
-            if (clients.openWindow) {
-                return clients.openWindow(urlToOpen);
-            }
-        })
-    );
+self.addEventListener('notificationclick', (event) => {
+  console.log('👆 Notification clicked:', event.action);
+  
+  event.notification.close();
+  
+  // Handle action buttons
+  if (event.action === 'close') {
+    return;
+  }
+  
+  const urlToOpen = event.notification.data?.url || './';
+  
+  event.waitUntil(
+    clients.matchAll({
+      type: 'window',
+      includeUncontrolled: true
+    })
+    .then((clientList) => {
+      // Check if chat is already open
+      for (const client of clientList) {
+        if (client.url.includes(urlToOpen) && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      
+      // If not, open new window
+      if (clients.openWindow) {
+        return clients.openWindow(urlToOpen);
+      }
+    })
+  );
 });
 
-// Handle messages from the main app
-self.addEventListener('message', event => {
-    console.log('Service Worker: Message received', event.data);
-    
-    if (event.data && event.data.type === 'SHOW_NOTIFICATION') {
-        const { title, options } = event.data.notification;
-        
-        event.waitUntil(
-            self.registration.showNotification(title, {
-                ...options,
-                icon: options.icon || 'icon.png',
-                badge: 'icon.png'
-            })
-        );
-    }
+// Handle messages from main app
+self.addEventListener('message', (event) => {
+  console.log('📩 Message from main app:', event.data);
+  
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
 
-// Handle background sync (future use)
-self.addEventListener('sync', event => {
-    console.log('Service Worker: Background sync', event.tag);
-    
-    if (event.tag === 'send-message') {
-        event.waitUntil(sendPendingMessages());
-    }
+// Background sync for offline messages
+self.addEventListener('sync', (event) => {
+  if (event.tag === 'send-messages') {
+    console.log('🔄 Background sync for messages');
+    event.waitUntil(sendPendingMessages());
+  }
 });
 
-// Function to send pending messages (for offline support)
 async function sendPendingMessages() {
-    // Implement offline message queue here
-    console.log('Sending pending messages...');
+  // Implement offline message queue here
+  console.log('📤 Sending pending messages...');
 }
 
-// Handle periodic sync (for background updates)
-self.addEventListener('periodicsync', event => {
-    if (event.tag === 'update-chat') {
-        console.log('Periodic sync for chat updates');
-        // Implement periodic updates here
-    }
-});
-
-// ==================== BACKGROUND TASKS ====================
-
-// Check for updates every hour
-self.addEventListener('message', event => {
-    if (event.data === 'CHECK_FOR_UPDATES') {
-        checkForAppUpdates();
-    }
-});
-
-async function checkForAppUpdates() {
-    try {
-        const response = await fetch('./?v=' + Date.now());
-        if (!response.ok) return;
-        
-        const cache = await caches.open(CACHE_NAME);
-        await cache.put('./', response);
-        
-        // Notify all clients about update
-        const clients = await self.clients.matchAll();
-        clients.forEach(client => {
-            client.postMessage({
-                type: 'APP_UPDATED',
-                version: APP_VERSION
-            });
-        });
-    } catch (error) {
-        console.log('Update check failed:', error);
-    }
-}
-
-// Clean up old notifications
+// Keep service worker alive
 setInterval(() => {
-    self.registration.getNotifications()
-        .then(notifications => {
-            const now = Date.now();
-            notifications.forEach(notification => {
-                const timestamp = notification.data?.timestamp;
-                if (timestamp && (now - timestamp > 24 * 60 * 60 * 1000)) {
-                    notification.close();
-                }
-            });
-        });
-}, 60 * 60 * 1000); // Check every hour
+  console.log('❤️ Service Worker heartbeat');
+}, 30000);
